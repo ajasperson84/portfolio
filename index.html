@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Andrew Jasperson — Director &amp; Creative Director</title>
+  <meta name="description" content="Andrew Jasperson — Director and Creative Director. Selected work." />
+
+  <!-- Fonts: bold grotesques, self-fallback to system grotesque stack -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@300;400;500;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-view="landing">
+  <!-- Transition wipe overlay -->
+  <div class="wipe" aria-hidden="true"></div>
+
+  <!-- Fixed UI: top bar -->
+  <header class="topbar">
+    <button class="topbar__brand" type="button" data-action="home">AJ</button>
+    <nav class="topbar__nav">
+      <button class="topbar__link" type="button" data-action="work">Work</button>
+      <button class="topbar__link" type="button" data-action="about">About</button>
+    </nav>
+  </header>
+
+  <!-- ===== LANDING ===== -->
+  <section class="landing" id="landing">
+    <button class="landing__name" type="button" data-action="work" aria-label="Enter — view work">
+      <span class="landing__line">ANDREW</span>
+      <span class="landing__line">JASPERSON</span>
+    </button>
+    <p class="landing__role">Director &amp; Creative Director</p>
+    <span class="landing__enter">Click the name — or scroll — to enter</span>
+  </section>
+
+  <!-- ===== WORK INDEX ===== -->
+  <main class="work" id="work" hidden>
+    <h1 class="work__heading">Selected Work</h1>
+    <ol class="work__list" id="work-list"><!-- populated by js --></ol>
+  </main>
+
+  <!-- Hover preview that follows the cursor over the work list -->
+  <div class="preview" id="preview" aria-hidden="true">
+    <div class="preview__media" id="preview-media"></div>
+  </div>
+
+  <!-- ===== PROJECT DETAIL (overlay) ===== -->
+  <article class="detail" id="detail" hidden>
+    <button class="detail__close" type="button" data-action="work" aria-label="Close">Close</button>
+    <header class="detail__head">
+      <span class="detail__index" id="detail-index"></span>
+      <h1 class="detail__title" id="detail-title"></h1>
+      <div class="detail__meta">
+        <span id="detail-role"></span>
+        <span id="detail-year"></span>
+      </div>
+      <p class="detail__tagline" id="detail-tagline"></p>
+    </header>
+    <div class="detail__body">
+      <p class="detail__desc" id="detail-desc"></p>
+      <div class="detail__media" id="detail-media"></div>
+    </div>
+  </article>
+
+  <!-- ===== ABOUT (overlay) ===== -->
+  <article class="about" id="about" hidden>
+    <button class="detail__close" type="button" data-action="work" aria-label="Close">Close</button>
+    <div class="about__inner">
+      <h1 class="about__title">Andrew Jasperson</h1>
+      <p class="about__lead">
+        Director and Creative Director working across film, brand, and image.
+        I build worlds with a stark point of view — bold type, decisive frames,
+        and ideas that hold the room.
+      </p>
+      <p class="about__body">
+        Available for direction, creative direction, and consulting.
+      </p>
+      <a class="about__contact" href="mailto:hello@andrewjasperson.com">hello@andrewjasperson.com</a>
+    </div>
+  </article>
+
+  <script src="js/projects.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -552,17 +552,16 @@ body[data-view="landing"] .topbar__brand { opacity: 0; pointer-events: none; }
   .detail__meta { flex-direction: column; gap: 0.5rem; }
 }
 
-/* Touch devices: no cursor, so pin the preview in the corner and let it
-   track the centered project as you scroll (driven by JS). */
+/* Touch devices: no cursor. The preview floats next to whichever project
+   is centered as you scroll (above or below it, positioned by JS). */
 @media (pointer: coarse) {
   .preview {
-    left: auto;
-    top: auto;
-    right: var(--pad);
-    bottom: calc(var(--pad) + env(safe-area-inset-bottom, 0px));
-    width: 42vw;
+    width: 44vw;
     max-width: 240px;
     transform: scale(0.85);
+    /* glide between positions instead of jumping */
+    transition: opacity 0.3s var(--ease), transform 0.4s var(--ease),
+                top 0.3s var(--ease), left 0.3s var(--ease);
   }
   .preview.is-visible { transform: scale(1); }
 

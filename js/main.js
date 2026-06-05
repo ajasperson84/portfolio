@@ -314,7 +314,26 @@
     if (best) {
       const p = PROJECTS.find((x) => x.id === best.dataset.project);
       if (p) setPreviewFor(p);
+      positionMobilePreview(best);
     }
+  }
+
+  // Float the preview just above or below the active row, whichever keeps
+  // it on screen and closest to the project the viewer is looking at.
+  function positionMobilePreview(row) {
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const w = Math.min(vw * 0.44, 240);
+    const h = w * 3 / 4;                 // matches the 4:3 aspect ratio
+    const pad = 16, gap = 14;
+    const r = row.getBoundingClientRect();
+    const rowCenter = r.top + r.height / 2;
+
+    // top half of screen -> drop below the row; bottom half -> sit above it
+    let top = rowCenter < vh / 2 ? r.bottom + gap : r.top - gap - h;
+    top = Math.max(pad, Math.min(top, vh - h - pad));
+
+    preview.style.left = (vw - w) / 2 + "px";   // horizontally centered
+    preview.style.top = top + "px";
   }
 
   function clearMobileActive() {

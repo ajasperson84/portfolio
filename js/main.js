@@ -109,14 +109,39 @@
     setHash(p.id);
   }
 
-  // Build placeholder media blocks. Swap these for <img>/<video> later.
+  // Build a project's media. Each item has a `type`:
+  //   vimeo | audio | image | (omit type) -> placeholder color block
   function renderMedia(media) {
     return media
-      .map(
-        (m) =>
-          `<div class="block ${m.tall ? "block--tall" : ""}" data-fill
-                style="--fill:${m.fill}" data-label="${m.label}"></div>`
-      )
+      .map((m) => {
+        switch (m.type) {
+          case "vimeo": {
+            // Stripped-down Vimeo chrome: no title/byline/portrait, do-not-track on.
+            const src =
+              `https://player.vimeo.com/video/${m.id}` +
+              `?title=0&byline=0&portrait=0&dnt=1`;
+            return `<div class="embed">
+              <iframe src="${src}" loading="lazy"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowfullscreen title="${m.label || "Video"}"></iframe>
+            </div>`;
+          }
+          case "audio":
+            return `<div class="audio">
+              ${m.label ? `<span class="audio__label">${m.label}</span>` : ""}
+              ${
+                m.src
+                  ? `<audio controls preload="none" src="${m.src}"></audio>`
+                  : ""
+              }
+            </div>`;
+          case "image":
+            return `<img src="${m.src}" alt="${m.label || ""}" loading="lazy" />`;
+          default:
+            return `<div class="block ${m.tall ? "block--tall" : ""}" data-fill
+                      style="--fill:${m.fill}" data-label="${m.label || ""}"></div>`;
+        }
+      })
       .join("");
   }
 
@@ -134,7 +159,8 @@
     if (!row) return;
     const p = PROJECTS.find((x) => x.id === row.dataset.project);
     if (!p) return;
-    previewMedia.style.background = p.fill;
+    previewMedia.style.backgroundColor = p.fill || "#161614";
+    previewMedia.style.backgroundImage = p.poster ? `url("${p.poster}")` : "none";
     preview.classList.add("is-visible");
   });
 

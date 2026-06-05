@@ -9,7 +9,7 @@
   --fg:        #f4f4f0;   /* off-white  */
   --fg-dim:    #8a8a86;   /* muted text */
   --line:      #2a2a28;   /* hairlines  */
-  --accent:    #f4f4f0;   /* swap to a color to theme the whole site */
+  --accent:    #c5ff00;   /* acid green — hover highlight + selection */
 
   --font-display: "Anton", "Arial Narrow", "Helvetica Neue", sans-serif;
   --font-grotesk: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
@@ -34,7 +34,7 @@ body {
 
 button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
 
-::selection { background: var(--fg); color: var(--bg); }
+::selection { background: var(--accent); color: var(--bg); }
 
 [hidden] { display: none !important; }
 
@@ -90,11 +90,12 @@ body[data-view="landing"] .topbar__brand { opacity: 0; pointer-events: none; }
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  text-align: center;
+  text-align: left;
   padding: var(--pad);
   position: relative;
+  overflow: hidden;             /* clip the J that hangs off the left edge */
 }
 
 .landing__name {
@@ -105,25 +106,19 @@ body[data-view="landing"] .topbar__brand { opacity: 0; pointer-events: none; }
   display: flex;
   flex-direction: column;
   font-size: clamp(4rem, 18vw, 18rem);
+  margin-left: -0.06em;         /* push left so JASPERSON's J clips off-screen */
 }
 .landing__line { display: block; }
 
 .landing__name .landing__line {
   transition: transform 0.5s var(--ease), opacity 0.5s var(--ease);
 }
-.landing__name:hover .landing__line:first-child { transform: translateX(-0.06em); }
-.landing__name:hover .landing__line:last-child  { transform: translateX(0.06em); }
-
-.landing__role {
-  margin-top: clamp(1rem, 3vw, 2.25rem);
-  font-size: clamp(0.85rem, 1.6vw, 1.1rem);
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-  color: var(--fg-dim);
-}
+.landing__name:hover .landing__line:first-child { transform: translateX(-0.04em); }
+.landing__name:hover .landing__line:last-child  { transform: translateX(0.04em); }
 
 .landing__enter {
   position: absolute;
+  left: var(--pad);
   bottom: clamp(1.5rem, 4vh, 3rem);
   font-size: 0.7rem;
   letter-spacing: 0.22em;
@@ -187,7 +182,7 @@ body[data-view="landing"] .topbar__brand { opacity: 0; pointer-events: none; }
 
 /* Dim the other rows when one is hovered */
 .work__list:hover .work__title { opacity: 0.35; }
-.work__list .work__row:hover .work__title { opacity: 1; }
+.work__list .work__row:hover .work__title { opacity: 1; color: var(--accent); }
 
 .work__year {
   font-size: 0.85rem;
@@ -204,15 +199,64 @@ body[data-view="landing"] .topbar__brand { opacity: 0; pointer-events: none; }
   top: 0; left: 0;
   z-index: 40;
   width: clamp(180px, 22vw, 340px);
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 4 / 3;                 /* CRT tube proportions */
   pointer-events: none;
   opacity: 0;
   transform: translate(-50%, -50%) scale(0.8);
   transition: opacity 0.35s var(--ease), transform 0.45s var(--ease);
   overflow: hidden;
+  border-radius: 10px / 14px;          /* faint tube curvature */
 }
 .preview.is-visible { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-.preview__media { width: 100%; height: 100%; }
+
+/* The picture itself — oversaturated, slightly blown out like an old tube */
+.preview__media {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: saturate(2.2) contrast(1.25) brightness(1.08);
+  animation: crt-jitter 3.2s steps(1) infinite;
+}
+
+/* Scanlines — fine dark horizontal lines that drift downward */
+.preview::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0)    0px,
+    rgba(0, 0, 0, 0)    2px,
+    rgba(0, 0, 0, 0.38) 3px,
+    rgba(0, 0, 0, 0.38) 4px
+  );
+  mix-blend-mode: multiply;
+  animation: crt-scan 7s linear infinite;
+}
+
+/* Convergence color-fringing on the edges + vignette + flicker */
+.preview::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: radial-gradient(120% 120% at 50% 50%,
+              transparent 52%, rgba(0, 0, 0, 0.55) 100%);
+  box-shadow:
+    inset 3px 0 7px -2px rgba(255, 0, 90, 0.55),
+    inset -3px 0 7px -2px rgba(0, 200, 255, 0.55),
+    inset 0 0 22px rgba(0, 0, 0, 0.5);
+  mix-blend-mode: screen;
+  animation: crt-flicker 0.13s steps(2) infinite;
+}
+
+@keyframes crt-scan   { from { background-position-y: 0; } to { background-position-y: 4px; } }
+@keyframes crt-flicker{ 0%,100% { opacity: 0.92; } 50% { opacity: 1; } }
+@keyframes crt-jitter { 0%,93%,100% { transform: translateX(0); } 95% { transform: translateX(-1px); } 97% { transform: translateX(1px); } }
 
 /* =====================================================================
    DETAIL OVERLAY
@@ -292,6 +336,40 @@ body[data-view="landing"] .topbar__brand { opacity: 0; pointer-events: none; }
 .detail__media { display: grid; gap: clamp(0.75rem, 2vw, 1.5rem); }
 .detail__media .block { width: 100%; aspect-ratio: 16 / 9; }
 .detail__media .block--tall { aspect-ratio: 3 / 4; }
+
+/* Responsive video embed (Vimeo) */
+.detail__media .embed {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  overflow: hidden;
+}
+.detail__media .embed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Audio player */
+.detail__media .audio {
+  border: 1px solid var(--line);
+  padding: clamp(1rem, 3vw, 1.75rem);
+  display: grid;
+  gap: 0.75rem;
+}
+.detail__media .audio__label {
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.detail__media .audio audio { width: 100%; }
+
+/* Real images, when you add them */
+.detail__media img { width: 100%; height: auto; display: block; }
 
 /* =====================================================================
    ABOUT

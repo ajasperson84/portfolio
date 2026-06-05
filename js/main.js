@@ -92,6 +92,12 @@
       void el.offsetWidth;                       // force reflow
       el.classList.add("is-entering");
     }
+
+    // Touch: the pinned preview belongs to the Work view only.
+    if (coarse) {
+      if (name === "work") requestAnimationFrame(updateMobileActive);
+      else clearMobileActive();
+    }
   }
 
   function goTo(name) {
@@ -215,50 +221,60 @@
   }
 
   /* -----------------------------------------------------------------
-     CURSOR-FOLLOWING PREVIEW
+     PREVIEW
+     - Desktop (fine pointer): the CRT preview follows the cursor and
+       shows on hover.
+     - Touch (coarse pointer): there's no cursor, so the preview is pinned
+       in the corner and tracks whichever project is centered as you
+       scroll the Work list (see updateMobileActive below).
      ----------------------------------------------------------------- */
   const preview      = document.getElementById("preview");
   const previewMedia = document.getElementById("preview-media");
+  const coarse = window.matchMedia("(pointer: coarse)").matches;
   let rafId = null;
   let target = { x: 0, y: 0 };
   let pos    = { x: 0, y: 0 };
-
   let hoveredId = null;
 
-  list.addEventListener("pointerover", (e) => {
-    const row = e.target.closest(".work__row");
-    if (!row) return;
-    const p = PROJECTS.find((x) => x.id === row.dataset.project);
-    if (!p) return;
-
+  // Show a project's thumbnail in the preview (shared by hover + scroll).
+  function setPreviewFor(p) {
     hoveredId = p.id;
     previewMedia.style.backgroundColor = p.fill || "#161614";
-    previewMedia.style.backgroundImage = "none";  // fill shows until the frame loads
+    previewMedia.style.backgroundImage = "none";   // fill shows until frame loads
     preview.classList.add("is-visible");
 
     getPoster(p).then((url) => {
-      if (!url || hoveredId !== p.id) return;      // moved on before it resolved
-      // Verify the image actually loads before swapping it in.
+      if (!url || hoveredId !== p.id) return;       // changed before it resolved
       const img = new Image();
       img.onload = () => {
         if (hoveredId === p.id) previewMedia.style.backgroundImage = `url("${url}")`;
       };
       img.src = url;
     });
-  });
+  }
 
-  list.addEventListener("pointerout", (e) => {
-    if (!e.relatedTarget || !e.relatedTarget.closest(".work__row")) {
-      hoveredId = null;
-      preview.classList.remove("is-visible");
-    }
-  });
+  // ---- Desktop: hover + cursor-follow (fine pointers only) ----
+  if (!coarse) {
+    list.addEventListener("pointerover", (e) => {
+      const row = e.target.closest(".work__row");
+      if (!row) return;
+      const p = PROJECTS.find((x) => x.id === row.dataset.project);
+      if (p) setPreviewFor(p);
+    });
 
-  window.addEventListener("pointermove", (e) => {
-    target.x = e.clientX;
-    target.y = e.clientY;
-    if (!rafId) rafId = requestAnimationFrame(follow);
-  });
+    list.addEventListener("pointerout", (e) => {
+      if (!e.relatedTarget || !e.relatedTarget.closest(".work__row")) {
+        hoveredId = null;
+        preview.classList.remove("is-visible");
+      }
+    });
+
+    window.addEventListener("pointermove", (e) => {
+      target.x = e.clientX;
+      target.y = e.clientY;
+      if (!rafId) rafId = requestAnimationFrame(follow);
+    });
+  }
 
   function follow() {
     pos.x += (target.x - pos.x) * 0.15;          // easing trail
@@ -270,6 +286,48 @@
     } else {
       rafId = null;
     }
+  }
+
+  // ---- Touch: highlight the centered project while scrolling ----
+  let mobileRaf = null;
+  function scheduleMobileActive() {
+    if (!coarse || mobileRaf) return;
+    mobileRaf = requestAnimationFrame(() => { mobileRaf = null; updateMobileActive(); });
+  }
+
+  function updateMobileActive() {
+    if (!coarse || body.dataset.view !== "work") return;
+    const rows = Array.from(list.querySelectorAll(".work__row"));
+    if (!rows.length) return;
+
+    const mid = window.innerHeight * 0.5;
+    let best = null, bestDist = Infinity;
+    for (const row of rows) {
+      const r = row.getBoundingClientRect();
+      const dist = Math.abs(r.top + r.height / 2 - mid);
+      if (dist < bestDist) { bestDist = dist; best = row; }
+    }
+
+    rows.forEach((row) => row.classList.toggle("is-active", row === best));
+    list.classList.toggle("has-active", !!best);
+
+    if (best) {
+      const p = PROJECTS.find((x) => x.id === best.dataset.project);
+      if (p) setPreviewFor(p);
+    }
+  }
+
+  function clearMobileActive() {
+    preview.classList.remove("is-visible");
+    hoveredId = null;
+    list.classList.remove("has-active");
+    list.querySelectorAll(".work__row.is-active")
+      .forEach((r) => r.classList.remove("is-active"));
+  }
+
+  if (coarse) {
+    window.addEventListener("scroll", scheduleMobileActive, { passive: true });
+    window.addEventListener("resize", scheduleMobileActive);
   }
 
   /* -----------------------------------------------------------------

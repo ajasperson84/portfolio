@@ -38,7 +38,7 @@ const PROJECTS = [
   {
     id: "jordan-trial-of-luka-doncic",
     title: "Jordan — Trial of Luka Dončić",
-    role: "Concept, Co-Director",
+    role: "Concept, Writer, Co-Director",
     fill: "#101418",
     media: [{ type: "vimeo", id: "1077008061", label: "Jordan — Trial of Luka Dončić" }]
   },

@@ -26,6 +26,7 @@
     <nav class="topbar__nav">
       <button class="topbar__link" type="button" data-action="work">Work</button>
       <button class="topbar__link" type="button" data-action="about">About</button>
+      <button class="topbar__link" type="button" data-action="contact">Contact</button>
     </nav>
   </header>
 
@@ -79,7 +80,48 @@
       <p class="about__body">
         Available for direction, creative direction, and consulting.
       </p>
-      <a class="about__contact" href="mailto:hello@andrewjasperson.com">hello@andrewjasperson.com</a>
+      <button class="about__contact" type="button" data-action="contact">Get in touch →</button>
+    </div>
+  </article>
+
+  <!-- ===== CONTACT (overlay) ===== -->
+  <article class="contact" id="contact" hidden>
+    <button class="detail__close" type="button" data-action="work" aria-label="Close">Close</button>
+    <div class="contact__inner">
+      <h1 class="contact__title">Get in touch</h1>
+
+      <form class="contact__form" id="contact-form"
+            action="https://formsubmit.co/ajasperson@gmail.com" method="POST">
+        <!-- FormSubmit configuration -->
+        <input type="hidden" name="_template" value="table" />
+        <input type="hidden" name="_captcha" value="true" />
+        <input type="hidden" name="_next" id="contact-next" value="" />
+        <!-- Honeypot: bots fill this hidden field; humans never see it -->
+        <input type="text" name="_honey" class="contact__honey"
+               tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+        <label class="contact__field">
+          <span class="contact__label">Your email</span>
+          <input type="email" name="email" required placeholder="you@studio.com" />
+        </label>
+
+        <label class="contact__field">
+          <span class="contact__label">Subject</span>
+          <input type="text" name="_subject" required placeholder="What's this about?" />
+        </label>
+
+        <label class="contact__field">
+          <span class="contact__label">Message</span>
+          <textarea name="message" rows="6" required placeholder="Tell me about it."></textarea>
+        </label>
+
+        <button type="submit" class="contact__submit">Send →</button>
+      </form>
+
+      <div class="contact__success" id="contact-success" hidden>
+        <h2 class="contact__success-title">Message sent.</h2>
+        <p class="contact__success-body">Thanks — I'll be in touch.</p>
+      </div>
     </div>
   </article>
 

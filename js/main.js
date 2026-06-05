@@ -17,8 +17,13 @@
     landing: document.getElementById("landing"),
     work:    document.getElementById("work"),
     detail:  document.getElementById("detail"),
-    about:   document.getElementById("about")
+    about:   document.getElementById("about"),
+    contact: document.getElementById("contact")
   };
+
+  const contactForm    = document.getElementById("contact-form");
+  const contactSuccess = document.getElementById("contact-success");
+  const contactNext    = document.getElementById("contact-next");
 
   const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -72,6 +77,13 @@
       el.hidden = key !== name;
     });
     body.dataset.view = name;
+
+    // Contact defaults to the form; the success state is shown only by
+    // revealContactSuccess() after a submission returns.
+    if (name === "contact") {
+      contactForm.hidden = false;
+      contactSuccess.hidden = true;
+    }
 
     // retrigger entrance animations
     const el = views[name];
@@ -286,7 +298,7 @@
   // Keyboard: Escape closes overlays back to work; Enter on landing enters
   document.addEventListener("keydown", (e) => {
     const view = body.dataset.view;
-    if (e.key === "Escape" && (view === "detail" || view === "about")) goTo("work");
+    if (e.key === "Escape" && (view === "detail" || view === "about" || view === "contact")) goTo("work");
     if (e.key === "Enter" && view === "landing" && document.activeElement === body) goTo("work");
   });
 
@@ -300,10 +312,18 @@
     setTimeout(() => (suppressHash = false), 0);
   }
 
+  // FormSubmit redirects here after a successful send; show the thank-you.
+  function revealContactSuccess() {
+    showView("contact");
+    contactForm.hidden = true;
+    contactSuccess.hidden = false;
+  }
+
   function routeFromHash() {
     if (suppressHash) return;
     const h = location.hash.replace("#", "");
     if (!h) { showView("landing"); return; }
+    if (h === "contact-sent") { revealContactSuccess(); return; }
     if (PROJECTS.some((p) => p.id === h)) { openProject(h); return; }
     if (views[h]) { showView(h); return; }
     showView("landing");
@@ -311,9 +331,14 @@
 
   window.addEventListener("hashchange", routeFromHash);
 
+  // Tell FormSubmit where to return after a submission (current page + flag).
+  contactNext.value = location.origin + location.pathname + "#contact-sent";
+
   // Initial state from URL (deep link support)
   const initial = location.hash.replace("#", "");
-  if (initial && (views[initial] || PROJECTS.some((p) => p.id === initial))) {
+  if (initial === "contact-sent") {
+    revealContactSuccess();
+  } else if (initial && (views[initial] || PROJECTS.some((p) => p.id === initial))) {
     if (PROJECTS.some((p) => p.id === initial)) {
       fillDetail(PROJECTS.find((x) => x.id === initial));
       showView("detail");

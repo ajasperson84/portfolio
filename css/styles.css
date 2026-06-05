@@ -262,7 +262,8 @@ body[data-view="landing"] .topbar__brand { opacity: 0; pointer-events: none; }
    DETAIL OVERLAY
    ===================================================================== */
 .detail,
-.about {
+.about,
+.contact {
   position: fixed;
   inset: 0;
   z-index: 50;
@@ -392,7 +393,90 @@ body[data-view="landing"] .topbar__brand { opacity: 0; pointer-events: none; }
   text-transform: uppercase;
   border-bottom: 2px solid var(--fg);
   padding-bottom: 0.1em;
+  transition: color 0.3s var(--ease), border-color 0.3s var(--ease);
 }
+.about__contact:hover { color: var(--accent); border-color: var(--accent); }
+
+/* =====================================================================
+   CONTACT
+   ===================================================================== */
+.contact__inner { max-width: 52ch; }
+
+.contact__title {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 10vw, 7rem);
+  text-transform: uppercase;
+  line-height: 0.9;
+  margin-bottom: clamp(2rem, 5vw, 3.5rem);
+}
+
+.contact__form { display: grid; gap: clamp(1.5rem, 4vw, 2.5rem); }
+
+.contact__field { display: grid; gap: 0.6rem; }
+
+.contact__label {
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+
+.contact input,
+.contact textarea {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--fg);
+  font-family: var(--font-grotesk);
+  font-size: clamp(1.05rem, 2vw, 1.4rem);
+  padding: 0.65rem 0;
+  outline: none;
+  transition: border-color 0.3s var(--ease);
+}
+.contact textarea { resize: vertical; min-height: 7rem; line-height: 1.4; }
+
+.contact input::placeholder,
+.contact textarea::placeholder { color: #5a5a56; }
+
+.contact input:focus,
+.contact textarea:focus { border-color: var(--accent); }
+
+/* Honeypot — visually and acoustically hidden, but bots still fill it */
+.contact__honey {
+  position: absolute !important;
+  left: -9999px !important;
+  width: 1px; height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.contact__submit {
+  justify-self: start;
+  margin-top: 0.5rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 5vw, 3rem);
+  text-transform: uppercase;
+  color: var(--fg);
+  border: 2px solid var(--fg);
+  padding: 0.35em 0.8em;
+  transition: background 0.3s var(--ease), color 0.3s var(--ease), border-color 0.3s var(--ease);
+}
+.contact__submit:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+
+.contact__success-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 8vw, 5rem);
+  text-transform: uppercase;
+  color: var(--accent);
+  line-height: 0.9;
+  margin-bottom: 1rem;
+}
+.contact__success-body { color: var(--fg-dim); font-size: 1.1rem; }
 
 /* =====================================================================
    PLACEHOLDER MEDIA BLOCKS (replace with real <img>/<video>)

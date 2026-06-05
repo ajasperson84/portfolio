@@ -46,7 +46,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   inset: 0 0 auto 0;
   z-index: 60;
   display: flex;
-  align-items: center;
+  align-items: flex-start;           /* align nav with the top of the stacked logo */
   justify-content: space-between;
   padding: 1.1rem var(--pad);
   mix-blend-mode: difference;        /* stays legible over any backdrop */
@@ -56,10 +56,15 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 
 .topbar__brand {
   font-family: var(--font-display);
-  font-size: 1.5rem;
-  letter-spacing: 0.02em;
+  font-size: clamp(1.1rem, 2.4vw, 1.6rem);
+  line-height: 0.74;            /* stacked tight, like the landing */
+  letter-spacing: 0.005em;
   text-transform: uppercase;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
 }
+.topbar__brand span { display: block; }
 
 .topbar__nav { display: flex; gap: 1.75rem; }
 
@@ -198,7 +203,7 @@ body[data-view="landing"] .topbar__brand { opacity: 0; pointer-events: none; }
 .preview {
   position: fixed;
   top: 0; left: 0;
-  z-index: 40;
+  z-index: 55;   /* above the detail overlay (50), below the top nav (60) */
   width: clamp(180px, 22vw, 340px);
   aspect-ratio: 4 / 3;                 /* CRT tube proportions */
   pointer-events: none;
@@ -372,6 +377,46 @@ body[data-view="landing"] .topbar__brand { opacity: 0; pointer-events: none; }
 
 /* Real images, when you add them */
 .detail__media img { width: 100%; height: auto; display: block; }
+
+/* ---- Prev / next project navigation ---- */
+.detail__nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: clamp(3rem, 8vw, 6rem);
+  padding-top: clamp(1.5rem, 4vw, 2.5rem);
+  border-top: 1px solid var(--line);
+}
+.detail__nav-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  text-align: left;
+  max-width: 48%;
+}
+.detail__nav-link--next { text-align: right; align-items: flex-end; }
+.detail__nav-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  transition: color 0.3s var(--ease);
+}
+.detail__nav-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 5vw, 3.5rem);
+  line-height: 0.92;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  transition: color 0.3s var(--ease), transform 0.4s var(--ease);
+}
+.detail__nav-link--prev:hover .detail__nav-title { transform: translateX(-0.25rem); }
+.detail__nav-link--next:hover .detail__nav-title { transform: translateX(0.25rem); }
+.detail__nav-link:hover .detail__nav-title { color: var(--accent); }
+.detail__nav-link:hover .detail__nav-label { color: var(--accent); }
+
+/* Empty (single-project safety) — hide a nav link with no target */
+.detail__nav-link[data-project=""] { visibility: hidden; }
 
 /* =====================================================================
    ABOUT

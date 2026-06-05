@@ -109,10 +109,15 @@
   /* -----------------------------------------------------------------
      PROJECT DETAIL
      ----------------------------------------------------------------- */
+  let currentProjectId = null;
+  const prevBtn = document.getElementById("detail-prev");
+  const nextBtn = document.getElementById("detail-next");
+
   // Populate the detail view from a project. Empty tagline/description hide.
   function fillDetail(p) {
-    const idx = PROJECTS.indexOf(p) + 1;
-    document.getElementById("detail-index").textContent = String(idx).padStart(2, "0");
+    currentProjectId = p.id;
+    const idx = PROJECTS.indexOf(p);
+    document.getElementById("detail-index").textContent = String(idx + 1).padStart(2, "0");
     document.getElementById("detail-title").textContent = p.title;
     document.getElementById("detail-role").textContent  = p.role;
 
@@ -125,6 +130,68 @@
     desc.hidden = !p.description;
 
     document.getElementById("detail-media").innerHTML = renderMedia(p.media);
+
+    // Prev / next project (wraps around the list)
+    const prev = PROJECTS[(idx - 1 + PROJECTS.length) % PROJECTS.length];
+    const next = PROJECTS[(idx + 1) % PROJECTS.length];
+    prevBtn.dataset.project = prev.id;
+    nextBtn.dataset.project = next.id;
+    document.getElementById("detail-prev-title").textContent = prev.title;
+    document.getElementById("detail-next-title").textContent = next.title;
+
+    attachAutoAdvance(p);
+  }
+
+  // When the project's main video ends, advance to the next project.
+  let currentVimeo = null;
+  function advanceToNext(fromId) {
+    if (body.dataset.view !== "detail" || currentProjectId !== fromId) return;
+    const idx = PROJECTS.findIndex((x) => x.id === fromId);
+    if (idx < 0) return;
+    openProject(PROJECTS[(idx + 1) % PROJECTS.length].id);
+  }
+
+  function attachAutoAdvance(p) {
+    // Tear down any previous Vimeo listener.
+    if (currentVimeo) {
+      try { currentVimeo.off("ended"); currentVimeo.destroy(); } catch (_) {}
+      currentVimeo = null;
+    }
+    const mediaEl = document.getElementById("detail-media");
+
+    const vimeoIframe = mediaEl.querySelector('iframe[src*="player.vimeo.com"]');
+    if (vimeoIframe && window.Vimeo) {
+      try {
+        currentVimeo = new Vimeo.Player(vimeoIframe);
+        currentVimeo.on("ended", () => advanceToNext(p.id));
+      } catch (_) {}
+    }
+
+    const ytIframe = mediaEl.querySelector('iframe[src*="youtube"]');
+    if (ytIframe) attachYouTubeEnd(ytIframe, p.id);
+  }
+
+  // YouTube end detection via the lazily-loaded IFrame API.
+  let ytApiLoading = false;
+  const ytPending = [];
+  function attachYouTubeEnd(iframe, projectId) {
+    if (!iframe.id) iframe.id = "yt-" + projectId;
+    const make = () => {
+      try {
+        new YT.Player(iframe.id, {
+          events: { onStateChange: (e) => { if (e.data === 0) advanceToNext(projectId); } }
+        });
+      } catch (_) {}
+    };
+    if (window.YT && window.YT.Player) { make(); return; }
+    ytPending.push(make);
+    if (!ytApiLoading) {
+      ytApiLoading = true;
+      window.onYouTubeIframeAPIReady = () => { ytPending.splice(0).forEach((fn) => fn()); };
+      const s = document.createElement("script");
+      s.src = "https://www.youtube.com/iframe_api";
+      document.head.appendChild(s);
+    }
   }
 
   function openProject(id) {
@@ -194,7 +261,7 @@
           case "youtube": {
             const src =
               `https://www.youtube-nocookie.com/embed/${m.id}` +
-              `?rel=0&modestbranding=1`;
+              `?rel=0&modestbranding=1&enablejsapi=1`;
             return `<div class="embed">
               <iframe src="${src}" loading="lazy"
                 allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
@@ -254,20 +321,26 @@
   }
 
   // ---- Desktop: hover + cursor-follow (fine pointers only) ----
-  if (!coarse) {
-    list.addEventListener("pointerover", (e) => {
-      const row = e.target.closest(".work__row");
-      if (!row) return;
-      const p = PROJECTS.find((x) => x.id === row.dataset.project);
+  // Works for any container with [data-project] children: the Work list and
+  // the prev/next project nav on a detail page.
+  function enableHoverPreview(container) {
+    container.addEventListener("pointerover", (e) => {
+      const el = e.target.closest("[data-project]");
+      if (!el || !el.dataset.project) return;
+      const p = PROJECTS.find((x) => x.id === el.dataset.project);
       if (p) setPreviewFor(p);
     });
-
-    list.addEventListener("pointerout", (e) => {
-      if (!e.relatedTarget || !e.relatedTarget.closest(".work__row")) {
+    container.addEventListener("pointerout", (e) => {
+      if (!e.relatedTarget || !e.relatedTarget.closest("[data-project]")) {
         hoveredId = null;
         preview.classList.remove("is-visible");
       }
     });
+  }
+
+  if (!coarse) {
+    enableHoverPreview(list);
+    enableHoverPreview(document.getElementById("detail-nav"));
 
     window.addEventListener("pointermove", (e) => {
       target.x = e.clientX;
@@ -332,7 +405,7 @@
     let top = rowCenter < vh / 2 ? r.bottom + gap : r.top - gap - h;
     top = Math.max(pad, Math.min(top, vh - h - pad));
 
-    preview.style.left = (vw - w) / 2 + "px";   // horizontally centered
+    preview.style.left = (vw - w - pad) + "px";   // right-aligned with a margin
     preview.style.top = top + "px";
   }
 

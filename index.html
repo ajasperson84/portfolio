@@ -41,7 +41,9 @@
 
   <!-- Fixed UI: top bar -->
   <header class="topbar">
-    <button class="topbar__brand" type="button" data-action="home">Andrew Jasperson</button>
+    <button class="topbar__brand" type="button" data-action="home" aria-label="Andrew Jasperson — home">
+      <span>Andrew</span><span>Jasperson</span>
+    </button>
     <nav class="topbar__nav">
       <button class="topbar__link" type="button" data-action="work">Work</button>
       <button class="topbar__link" type="button" data-action="about">About</button>
@@ -83,12 +85,25 @@
       <p class="detail__desc" id="detail-desc"></p>
       <div class="detail__media" id="detail-media"></div>
     </div>
+
+    <!-- Prev / next project navigation (hover shows the CRT preview) -->
+    <nav class="detail__nav" id="detail-nav" aria-label="Project navigation">
+      <button class="detail__nav-link detail__nav-link--prev" type="button"
+              id="detail-prev" data-project="">
+        <span class="detail__nav-label">Prev</span>
+        <span class="detail__nav-title" id="detail-prev-title"></span>
+      </button>
+      <button class="detail__nav-link detail__nav-link--next" type="button"
+              id="detail-next" data-project="">
+        <span class="detail__nav-label">Next</span>
+        <span class="detail__nav-title" id="detail-next-title"></span>
+      </button>
+    </nav>
   </article>
 
   <!-- ===== ABOUT (overlay) ===== -->
   <article class="about" id="about" hidden>
     <div class="about__inner">
-      <h1 class="about__title">Andrew Jasperson</h1>
       <p class="about__lead">
         Director &amp; Creative Director working with brands, agencies, artists
         and via commercial representation with
@@ -139,6 +154,8 @@
     </div>
   </article>
 
+  <!-- Vimeo Player API: lets the site detect when a video ends -->
+  <script src="https://player.vimeo.com/api/player.js"></script>
   <script src="js/projects.js"></script>
   <script src="js/main.js"></script>
 </body>

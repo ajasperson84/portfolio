@@ -120,14 +120,40 @@
     setHash(p.id);
   }
 
-  // Preview thumbnail: explicit poster, else auto-pulled from the first video.
+  // Preview thumbnail resolution.
+  // Vimeo's vumbnail.com sometimes serves a generic placeholder, so we ask
+  // Vimeo's official oEmbed API for the real frame and fall back gracefully:
+  //   explicit poster -> oEmbed (vimeo) -> vumbnail -> fill color
+  // Results are cached as promises so each video is resolved at most once.
+  const posterCache = new Map();
+
   function getPoster(p) {
-    if (p.poster) return p.poster;
-    const v = p.media.find((m) => m.type === "vimeo" || m.type === "youtube");
-    if (!v) return "";
-    return v.type === "vimeo"
-      ? `https://vumbnail.com/${v.id}.jpg`
-      : `https://img.youtube.com/vi/${v.id}/hqdefault.jpg`;
+    if (posterCache.has(p.id)) return posterCache.get(p.id);
+
+    const resolve = (async () => {
+      if (p.poster) return p.poster;
+      const v = p.media.find((m) => m.type === "vimeo" || m.type === "youtube");
+      if (!v) return "";
+      if (v.type === "youtube") {
+        return `https://img.youtube.com/vi/${v.id}/hqdefault.jpg`;
+      }
+      // Vimeo: official oEmbed gives the true thumbnail (also for unlisted).
+      try {
+        const r = await fetch(
+          `https://vimeo.com/api/oembed.json?url=https://vimeo.com/${v.id}&width=640`
+        );
+        if (r.ok) {
+          const data = await r.json();
+          if (data && data.thumbnail_url) return data.thumbnail_url;
+        }
+      } catch (_) {
+        /* network/CORS — fall through to vumbnail */
+      }
+      return `https://vumbnail.com/${v.id}.jpg`;
+    })();
+
+    posterCache.set(p.id, resolve);
+    return resolve;
   }
 
   // Build a project's media. Each item has a `type`:
@@ -185,19 +211,33 @@
   let target = { x: 0, y: 0 };
   let pos    = { x: 0, y: 0 };
 
+  let hoveredId = null;
+
   list.addEventListener("pointerover", (e) => {
     const row = e.target.closest(".work__row");
     if (!row) return;
     const p = PROJECTS.find((x) => x.id === row.dataset.project);
     if (!p) return;
-    const poster = getPoster(p);
+
+    hoveredId = p.id;
     previewMedia.style.backgroundColor = p.fill || "#161614";
-    previewMedia.style.backgroundImage = poster ? `url("${poster}")` : "none";
+    previewMedia.style.backgroundImage = "none";  // fill shows until the frame loads
     preview.classList.add("is-visible");
+
+    getPoster(p).then((url) => {
+      if (!url || hoveredId !== p.id) return;      // moved on before it resolved
+      // Verify the image actually loads before swapping it in.
+      const img = new Image();
+      img.onload = () => {
+        if (hoveredId === p.id) previewMedia.style.backgroundImage = `url("${url}")`;
+      };
+      img.src = url;
+    });
   });
 
   list.addEventListener("pointerout", (e) => {
     if (!e.relatedTarget || !e.relatedTarget.closest(".work__row")) {
+      hoveredId = null;
       preview.classList.remove("is-visible");
     }
   });

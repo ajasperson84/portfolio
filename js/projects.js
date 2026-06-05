@@ -96,13 +96,34 @@ const PROJECTS = [
     title: "The Cowboy's Hat",
     role: "Director, Writer",
     fill: "#221610",
-    media: [{ fill: "#221610", label: "Coming soon" }] // add a vimeo id when ready
+    media: [{ type: "vimeo", id: "283805712", label: "The Cowboy's Hat" }]
   },
   {
     id: "truly-monkey-pong",
     title: "Truly — Monkey Pong",
     role: "Director",
     fill: "#14201a",
-    media: [{ fill: "#14201a", label: "Coming soon" }] // add a vimeo id when ready
+    media: [{ type: "vimeo", id: "1156146463", label: "Truly — Monkey Pong" }]
+  },
+  {
+    id: "curry-putt",
+    title: "Curry — Putt",
+    role: "Director",
+    fill: "#101820",
+    media: [{ type: "vimeo", id: "888066814", label: "Curry — Putt" }]
+  },
+  {
+    id: "curry-massage",
+    title: "Curry — Massage",
+    role: "Director",
+    fill: "#141a20",
+    media: [{ type: "vimeo", id: "873866316", label: "Curry — Massage" }]
+  },
+  {
+    id: "cisco-drowning-in-tickets",
+    title: "Cisco — Drowning in Tickets",
+    role: "Director, Writer",
+    fill: "#101a1c",
+    media: [{ type: "vimeo", id: "907684610", label: "Cisco — Drowning in Tickets" }]
   }
 ];

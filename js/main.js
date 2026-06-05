@@ -35,7 +35,7 @@
               aria-label="Open project: ${p.title}">
         <span class="work__num">${String(i + 1).padStart(2, "0")}</span>
         <span class="work__title">${p.title}</span>
-        <span class="work__year">${p.role} · ${p.year}</span>
+        <span class="work__year">${p.role}</span>
       </button>`;
     list.appendChild(li);
   });
@@ -91,22 +91,43 @@
   /* -----------------------------------------------------------------
      PROJECT DETAIL
      ----------------------------------------------------------------- */
+  // Populate the detail view from a project. Empty tagline/description hide.
+  function fillDetail(p) {
+    const idx = PROJECTS.indexOf(p) + 1;
+    document.getElementById("detail-index").textContent = String(idx).padStart(2, "0");
+    document.getElementById("detail-title").textContent = p.title;
+    document.getElementById("detail-role").textContent  = p.role;
+
+    const tagline = document.getElementById("detail-tagline");
+    tagline.textContent = p.tagline || "";
+    tagline.hidden = !p.tagline;
+
+    const desc = document.getElementById("detail-desc");
+    desc.textContent = p.description || "";
+    desc.hidden = !p.description;
+
+    document.getElementById("detail-media").innerHTML = renderMedia(p.media);
+  }
+
   function openProject(id) {
     const p = PROJECTS.find((x) => x.id === id);
     if (!p) return;
 
     transition(() => {
-      const idx = PROJECTS.indexOf(p) + 1;
-      document.getElementById("detail-index").textContent   = String(idx).padStart(2, "0");
-      document.getElementById("detail-title").textContent   = p.title;
-      document.getElementById("detail-role").textContent    = p.role;
-      document.getElementById("detail-year").textContent    = p.year;
-      document.getElementById("detail-tagline").textContent = p.tagline;
-      document.getElementById("detail-desc").textContent    = p.description;
-      document.getElementById("detail-media").innerHTML     = renderMedia(p.media);
+      fillDetail(p);
       showView("detail");
     });
     setHash(p.id);
+  }
+
+  // Preview thumbnail: explicit poster, else auto-pulled from the first video.
+  function getPoster(p) {
+    if (p.poster) return p.poster;
+    const v = p.media.find((m) => m.type === "vimeo" || m.type === "youtube");
+    if (!v) return "";
+    return v.type === "vimeo"
+      ? `https://vumbnail.com/${v.id}.jpg`
+      : `https://img.youtube.com/vi/${v.id}/hqdefault.jpg`;
   }
 
   // Build a project's media. Each item has a `type`:
@@ -123,6 +144,16 @@
             return `<div class="embed">
               <iframe src="${src}" loading="lazy"
                 allow="autoplay; fullscreen; picture-in-picture"
+                allowfullscreen title="${m.label || "Video"}"></iframe>
+            </div>`;
+          }
+          case "youtube": {
+            const src =
+              `https://www.youtube-nocookie.com/embed/${m.id}` +
+              `?rel=0&modestbranding=1`;
+            return `<div class="embed">
+              <iframe src="${src}" loading="lazy"
+                allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
                 allowfullscreen title="${m.label || "Video"}"></iframe>
             </div>`;
           }
@@ -159,8 +190,9 @@
     if (!row) return;
     const p = PROJECTS.find((x) => x.id === row.dataset.project);
     if (!p) return;
+    const poster = getPoster(p);
     previewMedia.style.backgroundColor = p.fill || "#161614";
-    previewMedia.style.backgroundImage = p.poster ? `url("${p.poster}")` : "none";
+    previewMedia.style.backgroundImage = poster ? `url("${poster}")` : "none";
     preview.classList.add("is-visible");
   });
 
@@ -243,14 +275,7 @@
   const initial = location.hash.replace("#", "");
   if (initial && (views[initial] || PROJECTS.some((p) => p.id === initial))) {
     if (PROJECTS.some((p) => p.id === initial)) {
-      const p = PROJECTS.find((x) => x.id === initial);
-      document.getElementById("detail-index").textContent   = String(PROJECTS.indexOf(p) + 1).padStart(2, "0");
-      document.getElementById("detail-title").textContent   = p.title;
-      document.getElementById("detail-role").textContent    = p.role;
-      document.getElementById("detail-year").textContent    = p.year;
-      document.getElementById("detail-tagline").textContent = p.tagline;
-      document.getElementById("detail-desc").textContent    = p.description;
-      document.getElementById("detail-media").innerHTML     = renderMedia(p.media);
+      fillDetail(PROJECTS.find((x) => x.id === initial));
       showView("detail");
     } else {
       showView(initial);

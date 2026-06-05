@@ -4,97 +4,105 @@
    Each project:
      id          unique, url-safe slug (becomes #slug in the address bar)
      title       display name
-     role        "Director" / "Creative Director" / etc.
-     year        string
-     tagline     one bold line
-     description longer paragraph
-     fill        color shown in the CRT hover preview (used until a poster
-                 image is set, and as the fallback behind it)
-     poster      OPTIONAL preview image URL. For a Vimeo thumbnail, open the
-                 video, Settings → or use https://vumbnail.com/<VIDEO_ID>.jpg
-                 e.g. poster: "https://vumbnail.com/76979871.jpg"
-     media[]     the work itself, shown on the project page. Item types:
-
-        VIDEO (Vimeo) — just paste the numeric ID from the Vimeo URL
-          { type: "vimeo", id: "76979871", label: "Director's cut" }
-
-        AUDIO — a file in assets/ or any direct URL
-          { type: "audio", src: "assets/score.mp3", label: "Original score" }
-
-        IMAGE — a file in assets/ or any URL
-          { type: "image", src: "assets/still-01.jpg", label: "Still 01" }
-
-        PLACEHOLDER — colored block (no type), handy before real assets exist
-          { fill: "#1d1d22", label: "Coming soon", tall: true }
+     role        e.g. "Director, Writer"
+     tagline     OPTIONAL one bold line (hidden if empty)
+     description OPTIONAL paragraph (hidden if empty)
+     fill        fallback color for the CRT hover preview (shown if there's
+                 no video thumbnail, e.g. on projects with no link yet)
+     poster      OPTIONAL override for the preview image. Normally leave
+                 blank — the preview auto-pulls the thumbnail from the first
+                 video (Vimeo via vumbnail.com, YouTube via img.youtube.com).
+     media[]     the work itself. Item types:
+        { type: "vimeo",   id: "253713068", label: "…" }
+        { type: "youtube", id: "apVeSc8HC9I", label: "…" }
+        { type: "audio",   src: "assets/x.mp3", label: "…" }
+        { type: "image",   src: "assets/x.jpg", label: "…" }
+        { fill: "#1d1d22", label: "Coming soon" }   // placeholder block
    ===================================================================== */
 
 const PROJECTS = [
   {
-    id: "nocturne",
-    title: "Nocturne",
-    role: "Director",
-    year: "2025",
-    tagline: "A film about the hours no one else is awake for.",
+    id: "squarespace-keanu-reeves",
+    title: "Squarespace — Keanu Reeves",
+    role: "Concept",
     fill: "#1d1d22",
-    poster: "", // e.g. "https://vumbnail.com/76979871.jpg"
-    description:
-      "A short film shot entirely between 1am and 5am across an emptied city. " +
-      "Direction, edit, and grade. Built around a single rule: never cut on motion, " +
-      "always cut on stillness.",
-    media: [
-      { type: "vimeo", id: "76979871", label: "Nocturne — full film" },
-      { fill: "#23232a", label: "Still 01" },
-      { fill: "#15151a", label: "Still 02", tall: true }
-    ]
+    media: [{ type: "vimeo", id: "253713068", label: "Squarespace — Keanu Reeves" }]
   },
   {
-    id: "monolith",
-    title: "Monolith",
-    role: "Creative Director",
-    year: "2024",
-    tagline: "Brand identity built on a single, unbreakable mark.",
-    fill: "#2a2118",
-    poster: "",
-    description:
-      "Full creative direction for a launch campaign — naming, type system, art " +
-      "direction, and film. The whole identity hangs off one heavy grotesque set " +
-      "at impossible scale.",
-    media: [
-      { type: "vimeo", id: "76979871", label: "Launch film" },
-      { fill: "#33291d", label: "Key art" },
-      { fill: "#1c160f", label: "System", tall: true }
-    ]
+    id: "fancy-dan",
+    title: "Fancy Dan",
+    role: "Director, Writer",
+    fill: "#221a12",
+    media: [{ type: "vimeo", id: "780426029", label: "Fancy Dan" }]
   },
   {
-    id: "static",
-    title: "Static",
+    id: "jordan-trial-of-luka-doncic",
+    title: "Jordan — Trial of Luka Dončić",
+    role: "Concept, Co-Director",
+    fill: "#101418",
+    media: [{ type: "vimeo", id: "1077008061", label: "Jordan — Trial of Luka Dončić" }]
+  },
+  {
+    id: "jose-cuervo-last-days",
+    title: "Jose Cuervo — Last Days",
+    role: "Concept",
+    fill: "#241a10",
+    media: [{ type: "vimeo", id: "242854602", label: "Jose Cuervo — Last Days" }]
+  },
+  {
+    id: "truly-world-cup-anthem",
+    title: "Truly — World Cup Anthem",
     role: "Director",
-    year: "2024",
-    tagline: "Music video. One take. No edit. No mercy.",
     fill: "#101a16",
-    poster: "",
-    description:
-      "A single-take performance film. Choreographed camera, practical lighting, " +
-      "and a band that only got one shot. We printed the second take.",
-    media: [
-      { type: "vimeo", id: "76979871", label: "Static — music video" },
-      { type: "audio", src: "", label: "Original score (add an mp3 in assets/)" }
-    ]
+    media: [{ type: "vimeo", id: "1182847421", label: "Truly — World Cup Anthem" }]
   },
   {
-    id: "afterimage",
-    title: "Afterimage",
-    role: "Creative Director",
-    year: "2023",
-    tagline: "An exhibition you remember more than you saw.",
-    fill: "#221016",
-    poster: "",
-    description:
-      "Concept and creative direction for a gallery installation pairing large-format " +
-      "stills with sound. Visitors left with a residue, not a recap.",
-    media: [
-      { fill: "#2c141c", label: "Install 01" },
-      { fill: "#180a0f", label: "Install 02", tall: true }
-    ]
+    id: "jeff-bridges-sleeping-tapes",
+    title: "Jeff Bridges — Sleeping Tapes Album",
+    role: "Concept, Writer, Collaborator",
+    fill: "#1a1620",
+    media: [{ type: "youtube", id: "apVeSc8HC9I", label: "Sleeping Tapes" }]
+  },
+  {
+    id: "pinglr",
+    title: "Pinglr",
+    role: "Director, Writer",
+    fill: "#101820",
+    media: [{ type: "vimeo", id: "235652247", label: "Pinglr" }]
+  },
+  {
+    id: "mack-weldon-whistle",
+    title: "Mack Weldon — Whistle",
+    role: "Director",
+    fill: "#16161a",
+    media: [{ type: "vimeo", id: "1044437382", label: "Mack Weldon — Whistle" }]
+  },
+  {
+    id: "mack-weldon-negotiation",
+    title: "Mack Weldon — Negotiation",
+    role: "Director",
+    fill: "#1a1616",
+    media: [{ type: "vimeo", id: "1044437268", label: "Mack Weldon — Negotiation" }]
+  },
+  {
+    id: "important-nonsense",
+    title: "Important Nonsense",
+    role: "Director, Writer",
+    fill: "#201018",
+    media: [{ type: "vimeo", id: "283805366", label: "Important Nonsense" }]
+  },
+  {
+    id: "the-cowboys-hat",
+    title: "The Cowboy's Hat",
+    role: "Director, Writer",
+    fill: "#221610",
+    media: [{ fill: "#221610", label: "Coming soon" }] // add a vimeo id when ready
+  },
+  {
+    id: "truly-monkey-pong",
+    title: "Truly — Monkey Pong",
+    role: "Director",
+    fill: "#14201a",
+    media: [{ fill: "#14201a", label: "Coming soon" }] // add a vimeo id when ready
   }
 ];

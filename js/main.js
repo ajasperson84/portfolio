@@ -144,14 +144,19 @@
 
   // When the project's main video ends, advance to the next project.
   let currentVimeo = null;
+  let autoplayNext = false;   // true only when we arrived via a video ending
   function advanceToNext(fromId) {
     if (body.dataset.view !== "detail" || currentProjectId !== fromId) return;
     const idx = PROJECTS.findIndex((x) => x.id === fromId);
     if (idx < 0) return;
+    autoplayNext = true;      // the next project's video should start playing
     openProject(PROJECTS[(idx + 1) % PROJECTS.length].id);
   }
 
   function attachAutoAdvance(p) {
+    const auto = autoplayNext; // consume the flag for this load
+    autoplayNext = false;
+
     // Tear down any previous Vimeo listener.
     if (currentVimeo) {
       try { currentVimeo.off("ended"); currentVimeo.destroy(); } catch (_) {}
@@ -164,22 +169,32 @@
       try {
         currentVimeo = new Vimeo.Player(vimeoIframe);
         currentVimeo.on("ended", () => advanceToNext(p.id));
+        if (auto) {
+          // Try to play with sound; if the browser blocks it, mute and retry
+          // so the video still starts (viewer can unmute).
+          currentVimeo.play().catch(() => {
+            currentVimeo.setMuted(true).then(() => currentVimeo.play()).catch(() => {});
+          });
+        }
       } catch (_) {}
     }
 
     const ytIframe = mediaEl.querySelector('iframe[src*="youtube"]');
-    if (ytIframe) attachYouTubeEnd(ytIframe, p.id);
+    if (ytIframe) attachYouTubeEnd(ytIframe, p.id, auto);
   }
 
   // YouTube end detection via the lazily-loaded IFrame API.
   let ytApiLoading = false;
   const ytPending = [];
-  function attachYouTubeEnd(iframe, projectId) {
+  function attachYouTubeEnd(iframe, projectId, auto) {
     if (!iframe.id) iframe.id = "yt-" + projectId;
     const make = () => {
       try {
         new YT.Player(iframe.id, {
-          events: { onStateChange: (e) => { if (e.data === 0) advanceToNext(projectId); } }
+          events: {
+            onReady: (e) => { if (auto) { try { e.target.playVideo(); } catch (_) {} } },
+            onStateChange: (e) => { if (e.data === 0) advanceToNext(projectId); }
+          }
         });
       } catch (_) {}
     };

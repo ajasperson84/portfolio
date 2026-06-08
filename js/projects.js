@@ -38,9 +38,16 @@ const PROJECTS = [
   {
     id: "jordan-trial-of-luka-doncic",
     title: "Jordan — Trial of Luka Dončić",
-    role: "Concept, Writer, Co-Director",
+    role: "Concept, Writer",
     fill: "#101418",
     media: [{ type: "vimeo", id: "1077008061", label: "Jordan — Trial of Luka Dončić" }]
+  },
+  {
+    id: "pinglr",
+    title: "Pinglr",
+    role: "Director, Writer",
+    fill: "#101820",
+    media: [{ type: "vimeo", id: "235652247", label: "Pinglr" }]
   },
   {
     id: "mack-weldon-whistle",
@@ -71,11 +78,11 @@ const PROJECTS = [
     media: [{ type: "vimeo", id: "242854602", label: "Jose Cuervo — Last Days" }]
   },
   {
-    id: "pinglr",
-    title: "Pinglr",
+    id: "fancy-dan",
+    title: "Fancy Dan",
     role: "Director, Writer",
-    fill: "#101820",
-    media: [{ type: "vimeo", id: "235652247", label: "Pinglr" }]
+    fill: "#221a12",
+    media: [{ type: "vimeo", id: "780426029", label: "Fancy Dan" }]
   },
   {
     id: "truly-monkey-pong",
@@ -99,11 +106,11 @@ const PROJECTS = [
     media: [{ type: "vimeo", id: "873866316", label: "Curry — Massage" }]
   },
   {
-    id: "fancy-dan",
-    title: "Fancy Dan",
+    id: "the-cowboys-hat",
+    title: "The Cowboy's Hat",
     role: "Director, Writer",
-    fill: "#221a12",
-    media: [{ type: "vimeo", id: "780426029", label: "Fancy Dan" }]
+    fill: "#221610",
+    media: [{ type: "vimeo", id: "283805712", label: "The Cowboy's Hat" }]
   },
   {
     id: "cisco-drowning-in-tickets",
@@ -111,13 +118,6 @@ const PROJECTS = [
     role: "Director, Writer",
     fill: "#101a1c",
     media: [{ type: "vimeo", id: "907684610", label: "Cisco — Drowning in Tickets" }]
-  },
-  {
-    id: "the-cowboys-hat",
-    title: "The Cowboy's Hat",
-    role: "Director, Writer",
-    fill: "#221610",
-    media: [{ type: "vimeo", id: "283805712", label: "The Cowboy's Hat" }]
   },
   {
     id: "important-nonsense",

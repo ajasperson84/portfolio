@@ -24,7 +24,7 @@ const PROJECTS = [
   {
     id: "squarespace-keanu-reeves",
     title: "Squarespace — Keanu Reeves",
-    role: "Concept",
+    role: "Concept, Writer",
     fill: "#1d1d22",
     media: [{ type: "vimeo", id: "253713068", label: "Squarespace — Keanu Reeves" }]
   },
@@ -73,7 +73,7 @@ const PROJECTS = [
   {
     id: "jose-cuervo-last-days",
     title: "Jose Cuervo — Last Days",
-    role: "Concept",
+    role: "Concept, Writer",
     fill: "#241a10",
     media: [{ type: "vimeo", id: "242854602", label: "Jose Cuervo — Last Days" }]
   },

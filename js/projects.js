@@ -22,6 +22,13 @@
 
 const PROJECTS = [
   {
+    id: "nike-proof",
+    title: "Nike — Proof",
+    role: "Director, Writer",
+    fill: "#18181a",
+    media: [{ type: "vimeo", id: "1211442356", label: "Nike — Proof" }]
+  },
+  {
     id: "squarespace-keanu-reeves",
     title: "Squarespace — Keanu Reeves",
     role: "Concept, Writer",

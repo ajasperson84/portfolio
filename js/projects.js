@@ -50,6 +50,20 @@ const PROJECTS = [
     media: [{ type: "vimeo", id: "1077008061", label: "Jordan — Trial of Luka Dončić" }]
   },
   {
+    id: "jeff-bridges-sleeping-tapes",
+    title: "Jeff Bridges — Sleeping Tapes Album",
+    role: "Concept, Writer, Collaborator",
+    fill: "#1a1620",
+    media: [{ type: "youtube", id: "apVeSc8HC9I", label: "Sleeping Tapes" }]
+  },
+  {
+    id: "jose-cuervo-last-days",
+    title: "Jose Cuervo — Last Days",
+    role: "Concept, Writer",
+    fill: "#241a10",
+    media: [{ type: "vimeo", id: "242854602", label: "Jose Cuervo — Last Days" }]
+  },
+  {
     id: "pinglr",
     title: "Pinglr",
     role: "Director, Writer",
@@ -69,20 +83,6 @@ const PROJECTS = [
     role: "Director",
     fill: "#1a1616",
     media: [{ type: "vimeo", id: "1044437268", label: "Mack Weldon — Negotiation" }]
-  },
-  {
-    id: "jeff-bridges-sleeping-tapes",
-    title: "Jeff Bridges — Sleeping Tapes Album",
-    role: "Concept, Writer, Collaborator",
-    fill: "#1a1620",
-    media: [{ type: "youtube", id: "apVeSc8HC9I", label: "Sleeping Tapes" }]
-  },
-  {
-    id: "jose-cuervo-last-days",
-    title: "Jose Cuervo — Last Days",
-    role: "Concept, Writer",
-    fill: "#241a10",
-    media: [{ type: "vimeo", id: "242854602", label: "Jose Cuervo — Last Days" }]
   },
   {
     id: "fancy-dan",

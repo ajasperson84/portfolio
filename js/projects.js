@@ -29,11 +29,11 @@ const PROJECTS = [
     media: [{ type: "vimeo", id: "1211442356", label: "Nike — Proof" }]
   },
   {
-    id: "squarespace-keanu-reeves",
-    title: "Squarespace — Keanu Reeves",
-    role: "Concept, Writer",
-    fill: "#1d1d22",
-    media: [{ type: "vimeo", id: "253713068", label: "Squarespace — Keanu Reeves" }]
+    id: "jordan-trial-of-luka-doncic",
+    title: "Jordan — Trial of Luka Dončić",
+    role: "Concept, Writer, Co-Director",
+    fill: "#101418",
+    media: [{ type: "vimeo", id: "1077008061", label: "Jordan — Trial of Luka Dončić" }]
   },
   {
     id: "truly-world-cup-anthem",
@@ -43,18 +43,25 @@ const PROJECTS = [
     media: [{ type: "vimeo", id: "1182847421", label: "Truly — World Cup Anthem" }]
   },
   {
-    id: "jordan-trial-of-luka-doncic",
-    title: "Jordan — Trial of Luka Dončić",
-    role: "Concept, Writer, Co-Director",
-    fill: "#101418",
-    media: [{ type: "vimeo", id: "1077008061", label: "Jordan — Trial of Luka Dončić" }]
+    id: "mack-weldon-whistle",
+    title: "Mack Weldon — Whistle",
+    role: "Director",
+    fill: "#16161a",
+    media: [{ type: "vimeo", id: "1044437382", label: "Mack Weldon — Whistle" }]
   },
   {
-    id: "jeff-bridges-sleeping-tapes",
-    title: "Jeff Bridges — Sleeping Tapes Album",
-    role: "Concept, Writer, Collaborator",
-    fill: "#1a1620",
-    media: [{ type: "youtube", id: "apVeSc8HC9I", label: "Sleeping Tapes" }]
+    id: "truly-monkey-pong",
+    title: "Truly — Monkey Pong",
+    role: "Director",
+    fill: "#14201a",
+    media: [{ type: "vimeo", id: "1156146463", label: "Truly — Monkey Pong" }]
+  },
+  {
+    id: "squarespace-keanu-reeves",
+    title: "Squarespace — Keanu Reeves",
+    role: "Concept, Writer",
+    fill: "#1d1d22",
+    media: [{ type: "vimeo", id: "253713068", label: "Squarespace — Keanu Reeves" }]
   },
   {
     id: "jose-cuervo-last-days",
@@ -64,18 +71,18 @@ const PROJECTS = [
     media: [{ type: "vimeo", id: "242854602", label: "Jose Cuervo — Last Days" }]
   },
   {
+    id: "jeff-bridges-sleeping-tapes",
+    title: "Jeff Bridges — Sleeping Tapes Album",
+    role: "Concept, Writer, Collaborator",
+    fill: "#1a1620",
+    media: [{ type: "youtube", id: "apVeSc8HC9I", label: "Sleeping Tapes" }]
+  },
+  {
     id: "pinglr",
     title: "Pinglr",
     role: "Director, Writer",
     fill: "#101820",
     media: [{ type: "vimeo", id: "235652247", label: "Pinglr" }]
-  },
-  {
-    id: "mack-weldon-whistle",
-    title: "Mack Weldon — Whistle",
-    role: "Director",
-    fill: "#16161a",
-    media: [{ type: "vimeo", id: "1044437382", label: "Mack Weldon — Whistle" }]
   },
   {
     id: "mack-weldon-negotiation",
@@ -90,13 +97,6 @@ const PROJECTS = [
     role: "Director, Writer",
     fill: "#221a12",
     media: [{ type: "vimeo", id: "780426029", label: "Fancy Dan" }]
-  },
-  {
-    id: "truly-monkey-pong",
-    title: "Truly — Monkey Pong",
-    role: "Director",
-    fill: "#14201a",
-    media: [{ type: "vimeo", id: "1156146463", label: "Truly — Monkey Pong" }]
   },
   {
     id: "curry-putt",
